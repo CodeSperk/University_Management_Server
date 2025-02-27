@@ -30,19 +30,36 @@ const localGuardianSchema = new Schema<LocalGuardian>({
 
 const studentSchema = new Schema<IStudent>({
   id: { type: String },
-  name: userNameSchema,
-  gender: ['male', 'female'],
+  name: { type: userNameSchema, required: true },
+  gender: {
+    type: String,
+    enum: ['male', 'female'],
+    required: true,
+  },
   email: { type: String, required: true },
   dateOfBirth: String, //because it is not required
   contactNo: { type: String, required: true },
   emergencyContactNo: { type: String, required: true },
-  bloodGroup: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'],
+  bloodGroup: {
+    type: String,
+    enum: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'],
+  },
   presentAddress: { type: String, required: true },
   permanentAddress: { type: String, required: true },
-  guardian: guardianSchema,
-  localGuardian: localGuardianSchema,
+  guardian: {
+    type: guardianSchema,
+    required: true,
+  },
+  localGuardian: {
+    type: localGuardianSchema,
+    required: true,
+  },
   profileImg: { type: String },
-  isActive: ['active', 'blocked'],
+  isActive: {
+    type: String,
+    enum: ['active', 'blocked'],
+    default: 'active',
+  },
 });
 
 export const StudentModel = model<IStudent>('Student', studentSchema);
