@@ -1,15 +1,21 @@
-import globals from 'globals'
-import pluginJs from '@eslint/js'
-import tseslint from 'typescript-eslint'
-import prettierConfig from 'eslint-config-prettier'
-import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
+import globals from 'globals';
+import pluginJs from '@eslint/js';
+import tseslint from 'typescript-eslint';
+import prettierConfig from 'eslint-config-prettier';
+import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 
 export default [
   {
     files: ['src/**/*.{ts,tsx,js}'], // Restrict linting to only TS/TSX files in src
   },
   {
-    languageOptions: { globals: globals.browser },
+    languageOptions: {
+      globals: {
+        process: 'readonly',
+        window: 'readonly',
+        document: 'readonly',
+      },
+    },
   },
   {
     rules: {
@@ -19,9 +25,8 @@ export default [
       'no-unused-expressions': 'error',
       'no-console': 'warn',
       'no-undef': 'error',
-    },
-    globals: {
-      process: 'readonly',
+      semi: ['error', 'always'],
+      'prettier/prettier': ['error', { semi: true, singleQuote: true }],
     },
   },
   {
@@ -31,4 +36,4 @@ export default [
   ...tseslint.configs.recommended,
   prettierConfig,
   eslintPluginPrettierRecommended,
-]
+];
