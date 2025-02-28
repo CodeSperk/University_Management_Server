@@ -38,6 +38,7 @@ export type IStudent = {
   localGuardian: ILocalGuardian;
   profileImg?: string;
   isActive: 'active' | 'blocked';
+  isDeleted: true | false;
 };
 //for creating static
 export interface IStudentModel extends Model<IStudent> {

@@ -119,6 +119,7 @@ const studentValidationSchema = z.object({
     .url({ message: 'Invalid profile image URL' })
     .optional(),
   isActive: z.enum(['active', 'blocked']).default('active'),
+  isDeleted: z.boolean().default(false),
 });
 
 export { studentValidationSchema };

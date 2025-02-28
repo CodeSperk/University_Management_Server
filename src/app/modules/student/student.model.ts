@@ -9,6 +9,7 @@ import {
 } from './student.interface';
 import bcrypt from 'bcrypt';
 import config from '../../config';
+import { boolean } from 'joi';
 
 const userNameSchema = new Schema<IUserName>({
   firstName: {
@@ -62,63 +63,76 @@ const localGuardianSchema = new Schema<ILocalGuardian>({
   },
 });
 
-const studentSchema = new Schema<IStudent, IStudentModel>({
-  id: {
-    type: String,
-    unique: true,
-    trim: true,
-  },
-  name: {
-    type: userNameSchema,
-  },
-  password: {
-    type: String,
-  },
-  gender: {
-    type: String,
-    enum: {
-      values: ['male', 'female'],
-      message: 'The gender field can only be either "male" or "female"',
+const studentSchema = new Schema<IStudent, IStudentModel>(
+  {
+    id: {
+      type: String,
+      unique: true,
+      trim: true,
+    },
+    name: {
+      type: userNameSchema,
+    },
+    password: {
+      type: String,
+    },
+    gender: {
+      type: String,
+      enum: {
+        values: ['male', 'female'],
+        message: 'The gender field can only be either "male" or "female"',
+      },
+    },
+    email: {
+      type: String,
+      unique: true,
+      trim: true,
+    },
+    dateOfBirth: { type: String },
+    contactNo: {
+      type: String,
+      trim: true,
+    },
+    emergencyContactNo: {
+      type: String,
+      trim: true,
+    },
+    bloodGroup: {
+      type: String,
+      trim: true,
+    },
+    presentAddress: {
+      type: String,
+      trim: true,
+    },
+    permanentAddress: {
+      type: String,
+      trim: true,
+    },
+    guardian: {
+      type: guardianSchema,
+    },
+    localGuardian: {
+      type: localGuardianSchema,
+    },
+    profileImg: { type: String, trim: true },
+    isActive: {
+      type: String,
+      default: 'active',
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
     },
   },
-  email: {
-    type: String,
-    unique: true,
-    trim: true,
+  {
+    toJSON: { virtuals: true },
   },
-  dateOfBirth: { type: String },
-  contactNo: {
-    type: String,
-    trim: true,
-  },
-  emergencyContactNo: {
-    type: String,
-    trim: true,
-  },
-  bloodGroup: {
-    type: String,
-    trim: true,
-  },
-  presentAddress: {
-    type: String,
-    trim: true,
-  },
-  permanentAddress: {
-    type: String,
-    trim: true,
-  },
-  guardian: {
-    type: guardianSchema,
-  },
-  localGuardian: {
-    type: localGuardianSchema,
-  },
-  profileImg: { type: String, trim: true },
-  isActive: {
-    type: String,
-    default: 'active',
-    trim: true,
-  },
+);
+
+//mongoose virtual
+studentSchema.virtual('fullName').get(function () {
+  return `${this.name.firstName} ${this.name?.middleName} ${this.name.lastName}`;
 });
 
 //pre save middleware/hook
@@ -140,6 +154,21 @@ studentSchema.post('save', function (doc, next) {
 });
 
 //query middleware
+studentSchema.pre('find', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+studentSchema.pre('findOne', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+//[ {$match: {isDeleted: {$ne : true}}}, { '$match': { id: 's1234631' } } ]
+studentSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+  next();
+});
 
 //creating an custom static method
 
