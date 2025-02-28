@@ -1,114 +1,123 @@
 /* eslint-disable prettier/prettier */
-import Joi from 'joi';
+import { z } from 'zod';
 
-const userNameValidationSchema = Joi.object({
-  firstName: Joi.string()
-    .max(20)
+const userNameValidationSchema = z.object({
+  firstName: z
+    .string()
     .trim()
-    .required()
-    .custom((value, helpers) => {
-      const capitalized = value.charAt(0).toUpperCase() + value.slice(1);
-      if (value !== capitalized) {
-        return helpers.error('any.custom', {
-          message: `"${value}" is not in capitalize format`,
-        });
-      }
-      return value;
-    }),
-  middleName: Joi.string().trim().allow(null, ''),
-  lastName: Joi.string()
+    .min(2, 'First name must be at least 2 characters long')
+    .max(50, 'First name cannot exceed 50 characters'),
+  middleName: z
+    .string()
     .trim()
-    .required()
-    .pattern(/^[A-Za-z]+$/)
-    .messages({
-      'string.pattern.base': '{#value} is not valid',
-    }),
+    .max(50, 'Middle name cannot exceed 50 characters')
+    .optional(),
+  lastName: z
+    .string()
+    .trim()
+    .min(2, 'Last name must be at least 2 characters long')
+    .max(50, 'Last name cannot exceed 50 characters'),
 });
 
-const guardianValidationSchema = Joi.object({
-  fatherName: Joi.string().trim().required().messages({
-    'any.required': "Father's name is required",
-  }),
-  fatherOccupation: Joi.string().trim().required().messages({
-    'any.required': "Father's occupation is required",
-  }),
-  fatherContactNo: Joi.string().trim().required().messages({
-    'any.required': "Father's contact number is required",
-  }),
-  motherName: Joi.string().trim().required().messages({
-    'any.required': "Mother's name is required",
-  }),
-  motherOccupation: Joi.string().trim().required().messages({
-    'any.required': "Mother's occupation is required",
-  }),
-  motherContactNo: Joi.string().trim().required().messages({
-    'any.required': "Mother's contact number is required",
-  }),
-});
-
-const localGuardianValidationSchema = Joi.object({
-  name: Joi.string().trim().required().messages({
-    'any.required': "Local guardian's name is required",
-  }),
-  occupation: Joi.string().trim().required().messages({
-    'any.required': "Local guardian's occupation is required",
-  }),
-  contactName: Joi.string().trim().required().messages({
-    'any.required': "Local guardian's contact number is required",
-  }),
-  address: Joi.string().trim().required().messages({
-    'any.required': "Local guardian's address is required",
-  }),
-});
-
-const studentValidationSchema = Joi.object({
-  id: Joi.string().trim().required().messages({
-    'any.required': 'Student ID is required',
-  }),
-  name: userNameValidationSchema.required().messages({
-    'any.required': 'Student name is required',
-  }),
-  gender: Joi.string().valid('male', 'female').required().messages({
-    'any.only': 'The gender field can only be either "male" or "female"',
-    'any.required': 'Gender is required',
-  }),
-  email: Joi.string().trim().email().required().messages({
-    'string.email': '{#value} is not an email type',
-    'any.required': 'Email is required',
-  }),
-  dateOfBirth: Joi.string().trim().allow(null, ''), // Optional field
-  contactNo: Joi.string().trim().required().messages({
-    'any.required': 'Contact number is required',
-  }),
-  emergencyContactNo: Joi.string().trim().required().messages({
-    'any.required': 'Emergency contact number is required',
-  }),
-  bloodGroup: Joi.string()
+const guardianValidationSchema = z.object({
+  fatherName: z
+    .string()
     .trim()
-    .valid('A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-')
-    .messages({
-      'any.only': '{#value} is not a valid blood group.',
-    }),
-  presentAddress: Joi.string().trim().required().messages({
-    'any.required': 'Present address is required',
-  }),
-  permanentAddress: Joi.string().trim().required().messages({
-    'any.required': 'Permanent address is required',
-  }),
-  guardian: guardianValidationSchema.required().messages({
-    'any.required': 'Guardian information is required',
-  }),
-  localGuardian: localGuardianValidationSchema.required().messages({
-    'any.required': 'Local guardian information is required',
-  }),
-  profileImg: Joi.string().trim().allow(null, ''),
-  isActive: Joi.string()
+    .min(2, 'Father name must be at least 2 characters long'),
+  fatherOccupation: z
+    .string()
     .trim()
-    .valid('active', 'blocked')
-    .default('active')
-    .messages({
-      'any.only': 'Status must be either "active" or "blocked"',
-    }),
+    .min(2, 'Father occupation must be at least 2 characters long'),
+  fatherContactNo: z
+    .string()
+    .trim()
+    .regex(
+      /^\d{10,15}$/,
+      'Father contact number must be between 10 to 15 digits',
+    ),
+  motherName: z
+    .string()
+    .trim()
+    .min(2, 'Mother name must be at least 2 characters long'),
+  motherOccupation: z
+    .string()
+    .trim()
+    .min(2, 'Mother occupation must be at least 2 characters long'),
+  motherContactNo: z
+    .string()
+    .trim()
+    .regex(
+      /^\d{10,15}$/,
+      'Mother contact number must be between 10 to 15 digits',
+    ),
 });
 
-export default studentValidationSchema;
+const localGuardianValidationSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(2, "Local guardian's name must be at least 2 characters long"),
+  occupation: z
+    .string()
+    .trim()
+    .min(2, "Local guardian's occupation must be at least 2 characters long"),
+  contactName: z
+    .string()
+    .trim()
+    .regex(
+      /^\d{10,15}$/,
+      'Local guardian contact number must be between 10 to 15 digits',
+    ),
+  address: z
+    .string()
+    .trim()
+    .min(5, "Local guardian's address must be at least 5 characters long"),
+});
+
+const studentValidationSchema = z.object({
+  id: z.string().trim(),
+  name: userNameValidationSchema,
+  gender: z.enum(['male', 'female'], {
+    message: 'Gender must be either male or female',
+  }),
+  email: z.string().trim().email({ message: 'Invalid email format' }),
+  dateOfBirth: z
+    .string()
+    .trim()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, {
+      message: 'Date of Birth must be in YYYY-MM-DD format',
+    })
+    .optional(),
+  contactNo: z
+    .string()
+    .trim()
+    .regex(/^\d{10,15}$/, {
+      message: 'Contact number must be between 10 to 15 digits',
+    }),
+  emergencyContactNo: z
+    .string()
+    .trim()
+    .regex(/^\d{10,15}$/, {
+      message: 'Emergency contact number must be between 10 to 15 digits',
+    }),
+  bloodGroup: z
+    .enum(['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'])
+    .optional(),
+  presentAddress: z
+    .string()
+    .trim()
+    .min(5, { message: 'Present address must be at least 5 characters long' }),
+  parmanentAddress: z.string().trim().min(5, {
+    message: 'Permanent address must be at least 5 characters long',
+  }),
+  guardian: guardianValidationSchema,
+  localGuardian: localGuardianValidationSchema,
+  profileImg: z
+    .string()
+    .trim()
+    .url({ message: 'Invalid profile image URL' })
+    .optional(),
+  isActive: z.enum(['active', 'blocked']).default('active'),
+});
+
+export { studentValidationSchema };
