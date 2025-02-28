@@ -3,7 +3,7 @@ import {
   IGuardian,
   IStudent,
   ILocalGuardian,
-  IStudentMethods,
+  // IStudentMethods,
   IStudentModel,
   IUserName,
 } from './student.interface';
@@ -60,7 +60,7 @@ const localGuardianSchema = new Schema<ILocalGuardian>({
   },
 });
 
-const studentSchema = new Schema<IStudent, IStudentModel, IStudentMethods>({
+const studentSchema = new Schema<IStudent, IStudentModel>({
   id: {
     type: String,
     unique: true,
@@ -116,11 +116,18 @@ const studentSchema = new Schema<IStudent, IStudentModel, IStudentMethods>({
   },
 });
 
-//creating an custom instance method
-studentSchema.methods.isUserExists = async function (id: string) {
+//creating an custom static method
+
+studentSchema.statics.isUserExists = async function (id: string) {
   const existingUser = await StudentModel.findOne({ id });
   return existingUser;
 };
+
+//creating an custom instance method
+// studentSchema.methods.isUserExists = async function (id: string) {
+//   const existingUser = await StudentModel.findOne({ id });
+//   return existingUser;
+// };
 
 export const StudentModel = model<IStudent, IStudentModel>(
   'Student',

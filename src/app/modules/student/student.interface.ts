@@ -38,14 +38,19 @@ export type IStudent = {
   profileImg?: string;
   isActive: 'active' | 'blocked';
 };
-
-export type IStudentMethods = {
+//for creating static
+export interface IStudentModel extends Model<IStudent> {
   isUserExists(id: string): Promise<IStudent | null>;
-};
+}
 
-// Create a new Model type that knows about StudentMethods...
-export type IStudentModel = Model<
-  IStudent,
-  Record<string, never>,
-  IStudentMethods
->;
+//for custom instance methods
+// export type IStudentMethods = {
+//   isUserExists(id: string): Promise<IStudent | null>;
+// };
+
+// // Create a new Model type that knows about StudentMethods...
+// export type IStudentModel = Model<
+//   IStudent,
+//   Record<string, never>,
+//   IStudentMethods
+// >;
