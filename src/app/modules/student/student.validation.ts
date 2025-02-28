@@ -107,7 +107,7 @@ const studentValidationSchema = z.object({
     .string()
     .trim()
     .min(5, { message: 'Present address must be at least 5 characters long' }),
-  parmanentAddress: z.string().trim().min(5, {
+  permanentAddress: z.string().trim().min(5, {
     message: 'Permanent address must be at least 5 characters long',
   }),
   guardian: guardianValidationSchema,

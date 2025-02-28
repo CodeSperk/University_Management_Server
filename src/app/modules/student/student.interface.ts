@@ -1,10 +1,12 @@
-export type UserName = {
+import { Model } from 'mongoose';
+
+export type IUserName = {
   firstName: string;
   middleName?: string;
   lastName: string;
 };
 
-export type Guardian = {
+export type IGuardian = {
   fatherName: string;
   fatherOccupation: string;
   fatherContactNo: string;
@@ -13,7 +15,7 @@ export type Guardian = {
   motherContactNo: string;
 };
 
-export type LocalGuardian = {
+export type ILocalGuardian = {
   name: string;
   occupation: string;
   contactName: string;
@@ -22,7 +24,7 @@ export type LocalGuardian = {
 
 export type IStudent = {
   id: string;
-  name: UserName;
+  name: IUserName;
   gender: 'male' | 'female';
   email: string;
   dateOfBirth?: string;
@@ -31,8 +33,19 @@ export type IStudent = {
   bloodGroup?: 'A+' | 'A-' | 'B+' | 'B-' | 'O+' | 'O-' | 'AB+' | 'AB-';
   presentAddress: string;
   permanentAddress: string;
-  guardian: Guardian;
-  localGuardian: LocalGuardian;
+  guardian: IGuardian;
+  localGuardian: ILocalGuardian;
   profileImg?: string;
   isActive: 'active' | 'blocked';
 };
+
+export type IStudentMethods = {
+  isUserExists(id: string): Promise<IStudent | null>;
+};
+
+// Create a new Model type that knows about StudentMethods...
+export type IStudentModel = Model<
+  IStudent,
+  Record<string, never>,
+  IStudentMethods
+>;

@@ -1,12 +1,14 @@
 import { Schema, model } from 'mongoose';
 import {
-  Guardian,
+  IGuardian,
   IStudent,
-  LocalGuardian,
-  UserName,
+  ILocalGuardian,
+  IStudentMethods,
+  IStudentModel,
+  IUserName,
 } from './student.interface';
 
-const userNameSchema = new Schema<UserName>({
+const userNameSchema = new Schema<IUserName>({
   firstName: {
     type: String,
     trim: true,
@@ -18,7 +20,7 @@ const userNameSchema = new Schema<UserName>({
   },
 });
 
-const guardianSchema = new Schema<Guardian>({
+const guardianSchema = new Schema<IGuardian>({
   fatherName: {
     type: String,
     trim: true,
@@ -42,7 +44,7 @@ const guardianSchema = new Schema<Guardian>({
   },
 });
 
-const localGuardianSchema = new Schema<LocalGuardian>({
+const localGuardianSchema = new Schema<ILocalGuardian>({
   name: { type: String, required: [true, "Local guardian's name is required"] },
   occupation: {
     type: String,
@@ -58,7 +60,7 @@ const localGuardianSchema = new Schema<LocalGuardian>({
   },
 });
 
-const studentSchema = new Schema<IStudent>({
+const studentSchema = new Schema<IStudent, IStudentModel, IStudentMethods>({
   id: {
     type: String,
     unique: true,
@@ -114,4 +116,13 @@ const studentSchema = new Schema<IStudent>({
   },
 });
 
-export const StudentModel = model<IStudent>('Student', studentSchema);
+//creating an custom instance method
+studentSchema.methods.isUserExists = async function (id: string) {
+  const existingUser = await StudentModel.findOne({ id });
+  return existingUser;
+};
+
+export const StudentModel = model<IStudent, IStudentModel>(
+  'Student',
+  studentSchema,
+);
