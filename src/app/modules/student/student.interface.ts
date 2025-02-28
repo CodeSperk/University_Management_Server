@@ -25,6 +25,7 @@ export type ILocalGuardian = {
 export type IStudent = {
   id: string;
   name: IUserName;
+  password: string;
   gender: 'male' | 'female';
   email: string;
   dateOfBirth?: string;

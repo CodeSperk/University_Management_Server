@@ -7,6 +7,8 @@ import {
   IStudentModel,
   IUserName,
 } from './student.interface';
+import bcrypt from 'bcrypt';
+import config from '../../config';
 
 const userNameSchema = new Schema<IUserName>({
   firstName: {
@@ -69,6 +71,9 @@ const studentSchema = new Schema<IStudent, IStudentModel>({
   name: {
     type: userNameSchema,
   },
+  password: {
+    type: String,
+  },
   gender: {
     type: String,
     enum: {
@@ -115,6 +120,26 @@ const studentSchema = new Schema<IStudent, IStudentModel>({
     trim: true,
   },
 });
+
+//pre save middleware/hook
+studentSchema.pre('save', async function (next) {
+  // console.log(this, 'pre hook : we will save the data');
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
+  const user = this;
+  user.password = await bcrypt.hash(
+    user.password,
+    Number(config.bcrypt_salt_rounnt),
+  );
+  next();
+});
+
+//post save middleware
+studentSchema.post('save', function (doc, next) {
+  doc.password = '';
+  next();
+});
+
+//query middleware
 
 //creating an custom static method
 

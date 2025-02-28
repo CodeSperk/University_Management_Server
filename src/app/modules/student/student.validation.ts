@@ -77,6 +77,7 @@ const localGuardianValidationSchema = z.object({
 const studentValidationSchema = z.object({
   id: z.string().trim(),
   name: userNameValidationSchema,
+  password: z.string().min(8, { message: 'Minimum 8 character required' }),
   gender: z.enum(['male', 'female'], {
     message: 'Gender must be either male or female',
   }),
