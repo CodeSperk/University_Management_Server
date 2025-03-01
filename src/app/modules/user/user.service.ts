@@ -8,14 +8,11 @@ const createStudentIntoDB = async (password: string, studentData: IStudent) => {
   //create a user object
   const userData: Partial<TUser> = {};
 
-  //if password is not given use default password
-  userData.password = password || (config.default_pass as string);
-
-  //set student role
+  //set userData values
+  userData.password = password || (config.default_password as string);
   userData.role = 'student';
-
-  // manually generated id
-  userData.id = '2030100001';
+  userData.id = '2030100001'; // custom generated id
+  //remaining are set as default value
 
   //create a user
   const newUser = await User.create(userData);
