@@ -24,7 +24,6 @@ export type ILocalGuardian = {
 export type IStudent = {
   id: string;
   user: Types.ObjectId;
-  password: string;
   name: IUserName;
   gender: 'male' | 'female';
   email: string;
@@ -43,15 +42,3 @@ export type IStudent = {
 export interface IStudentModel extends Model<IStudent> {
   isUserExists(id: string): Promise<IStudent | null>;
 }
-
-//for custom instance methods
-// export type IStudentMethods = {
-//   isUserExists(id: string): Promise<IStudent | null>;
-// };
-
-// // Create a new Model type that knows about StudentMethods...
-// export type IStudentModel = Model<
-//   IStudent,
-//   Record<string, never>,
-//   IStudentMethods
-// >;

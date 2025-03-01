@@ -7,8 +7,6 @@ import {
   IStudentModel,
   IUserName,
 } from './student.interface';
-import bcrypt from 'bcrypt';
-import config from '../../config';
 
 const userNameSchema = new Schema<IUserName>({
   firstName: {
@@ -78,9 +76,6 @@ const studentSchema = new Schema<IStudent, IStudentModel>(
       unique: true,
       ref: 'User',
     },
-    password: {
-      type: String,
-    },
     gender: {
       type: String,
       enum: {
@@ -91,6 +86,7 @@ const studentSchema = new Schema<IStudent, IStudentModel>(
     email: {
       type: String,
       unique: true,
+      required: true,
       trim: true,
     },
     dateOfBirth: { type: String },
@@ -134,24 +130,6 @@ const studentSchema = new Schema<IStudent, IStudentModel>(
 //mongoose virtual
 studentSchema.virtual('fullName').get(function () {
   return `${this.name.firstName} ${this.name?.middleName} ${this.name.lastName}`;
-});
-
-//pre save middleware/hook
-studentSchema.pre('save', async function (next) {
-  // console.log(this, 'pre hook : we will save the data');
-  // eslint-disable-next-line @typescript-eslint/no-this-alias
-  const user = this;
-  user.password = await bcrypt.hash(
-    user.password,
-    Number(config.bcrypt_salt_rounnt),
-  );
-  next();
-});
-
-//post save middleware
-studentSchema.post('save', function (doc, next) {
-  doc.password = '';
-  next();
 });
 
 //query middleware
