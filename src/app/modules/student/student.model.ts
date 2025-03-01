@@ -9,7 +9,6 @@ import {
 } from './student.interface';
 import bcrypt from 'bcrypt';
 import config from '../../config';
-import { boolean } from 'joi';
 
 const userNameSchema = new Schema<IUserName>({
   firstName: {
@@ -73,6 +72,12 @@ const studentSchema = new Schema<IStudent, IStudentModel>(
     name: {
       type: userNameSchema,
     },
+    user: {
+      type: Schema.Types.ObjectId,
+      required: [true, 'User id is required'],
+      unique: true,
+      ref: 'User',
+    },
     password: {
       type: String,
     },
@@ -116,10 +121,6 @@ const studentSchema = new Schema<IStudent, IStudentModel>(
       type: localGuardianSchema,
     },
     profileImg: { type: String, trim: true },
-    isActive: {
-      type: String,
-      default: 'active',
-    },
     isDeleted: {
       type: Boolean,
       default: false,
