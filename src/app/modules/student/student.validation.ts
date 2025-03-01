@@ -73,52 +73,54 @@ const localGuardianValidationSchema = z.object({
     .min(5, "Local guardian's address must be at least 5 characters long"),
 });
 
-const studentValidationSchema = z.object({
-  id: z.string().trim(),
-  name: userNameValidationSchema,
-  password: z.string().min(8, { message: 'Minimum 8 character required' }),
-  gender: z.enum(['male', 'female'], {
-    message: 'Gender must be either male or female',
-  }),
-  email: z.string().trim().email({ message: 'Invalid email format' }),
-  dateOfBirth: z
-    .string()
-    .trim()
-    .regex(/^\d{4}-\d{2}-\d{2}$/, {
-      message: 'Date of Birth must be in YYYY-MM-DD format',
-    })
-    .optional(),
-  contactNo: z
-    .string()
-    .trim()
-    .regex(/^\d{10,15}$/, {
-      message: 'Contact number must be between 10 to 15 digits',
+const CreateStudentValidationSchema = z.object({
+  body: z.object({
+    password: z.string().max(20),
+    student: z.object({
+      name: userNameValidationSchema,
+      gender: z.enum(['male', 'female'], {
+        message: 'Gender must be either male or female',
+      }),
+      email: z.string().trim().email({ message: 'Invalid email format' }),
+      dateOfBirth: z
+        .string()
+        .trim()
+        .regex(/^\d{4}-\d{2}-\d{2}$/, {
+          message: 'Date of Birth must be in YYYY-MM-DD format',
+        })
+        .optional(),
+      contactNo: z
+        .string()
+        .trim()
+        .regex(/^\d{10,15}$/, {
+          message: 'Contact number must be between 10 to 15 digits',
+        }),
+      emergencyContactNo: z
+        .string()
+        .trim()
+        .regex(/^\d{10,15}$/, {
+          message: 'Emergency contact number must be between 10 to 15 digits',
+        }),
+      bloodGroup: z
+        .enum(['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'])
+        .optional(),
+      presentAddress: z.string().trim().min(5, {
+        message: 'Present address must be at least 5 characters long',
+      }),
+      permanentAddress: z.string().trim().min(5, {
+        message: 'Permanent address must be at least 5 characters long',
+      }),
+      guardian: guardianValidationSchema,
+      localGuardian: localGuardianValidationSchema,
+      profileImg: z
+        .string()
+        .trim()
+        .url({ message: 'Invalid profile image URL' })
+        .optional(),
     }),
-  emergencyContactNo: z
-    .string()
-    .trim()
-    .regex(/^\d{10,15}$/, {
-      message: 'Emergency contact number must be between 10 to 15 digits',
-    }),
-  bloodGroup: z
-    .enum(['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'])
-    .optional(),
-  presentAddress: z
-    .string()
-    .trim()
-    .min(5, { message: 'Present address must be at least 5 characters long' }),
-  permanentAddress: z.string().trim().min(5, {
-    message: 'Permanent address must be at least 5 characters long',
   }),
-  guardian: guardianValidationSchema,
-  localGuardian: localGuardianValidationSchema,
-  profileImg: z
-    .string()
-    .trim()
-    .url({ message: 'Invalid profile image URL' })
-    .optional(),
-  isActive: z.enum(['active', 'blocked']).default('active'),
-  isDeleted: z.boolean().default(false),
 });
 
-export { studentValidationSchema };
+export const studentValidations = {
+  CreateStudentValidationSchema,
+};
