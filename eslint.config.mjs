@@ -26,7 +26,10 @@ export default [
       'no-console': 'warn',
       'no-undef': 'error',
       semi: ['error', 'always'],
-      'prettier/prettier': ['error', { semi: true, singleQuote: true }],
+      'prettier/prettier': [
+        'error',
+        { semi: true, singleQuote: true, endOfLine: 'lf' },
+      ],
     },
   },
   {
