@@ -8,57 +8,69 @@ import {
   IUserName,
 } from './student.interface';
 
-const userNameSchema = new Schema<IUserName>({
-  firstName: {
-    type: String,
-    trim: true,
+const userNameSchema = new Schema<IUserName>(
+  {
+    firstName: {
+      type: String,
+      trim: true,
+    },
+    middleName: { type: String },
+    lastName: {
+      type: String,
+      trim: true,
+    },
   },
-  middleName: { type: String },
-  lastName: {
-    type: String,
-    trim: true,
-  },
-});
+  { _id: false },
+);
 
-const guardianSchema = new Schema<IGuardian>({
-  fatherName: {
-    type: String,
-    trim: true,
+const guardianSchema = new Schema<IGuardian>(
+  {
+    fatherName: {
+      type: String,
+      trim: true,
+    },
+    fatherOccupation: {
+      type: String,
+      trim: true,
+    },
+    fatherContactNo: {
+      type: String,
+      trim: true,
+    },
+    motherName: { type: String, required: [true, "Mother's name is required"] },
+    motherOccupation: {
+      type: String,
+      trim: true,
+    },
+    motherContactNo: {
+      type: String,
+      trim: true,
+    },
   },
-  fatherOccupation: {
-    type: String,
-    trim: true,
-  },
-  fatherContactNo: {
-    type: String,
-    trim: true,
-  },
-  motherName: { type: String, required: [true, "Mother's name is required"] },
-  motherOccupation: {
-    type: String,
-    trim: true,
-  },
-  motherContactNo: {
-    type: String,
-    trim: true,
-  },
-});
+  { _id: false },
+);
 
-const localGuardianSchema = new Schema<ILocalGuardian>({
-  name: { type: String, required: [true, "Local guardian's name is required"] },
-  occupation: {
-    type: String,
-    trim: true,
+const localGuardianSchema = new Schema<ILocalGuardian>(
+  {
+    name: {
+      type: String,
+      required: [true, "Local guardian's name is required"],
+    },
+    occupation: {
+      type: String,
+      trim: true,
+    },
+    contactName: {
+      type: String,
+      trim: true,
+    },
+    address: {
+      type: String,
+      trim: true,
+    },
   },
-  contactName: {
-    type: String,
-    trim: true,
-  },
-  address: {
-    type: String,
-    trim: true,
-  },
-});
+  { _id: false },
+);
 
 const studentSchema = new Schema<IStudent, IStudentModel>(
   {
