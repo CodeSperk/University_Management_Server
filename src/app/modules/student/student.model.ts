@@ -101,7 +101,7 @@ const studentSchema = new Schema<IStudent, IStudentModel>(
       required: true,
       trim: true,
     },
-    dateOfBirth: { type: String },
+    dateOfBirth: { type: Date },
     contactNo: {
       type: String,
       trim: true,

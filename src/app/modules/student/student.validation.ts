@@ -82,13 +82,7 @@ const CreateStudentValidationSchema = z.object({
         message: 'Gender must be either male or female',
       }),
       email: z.string().trim().email({ message: 'Invalid email format' }),
-      dateOfBirth: z
-        .string()
-        .trim()
-        .regex(/^\d{4}-\d{2}-\d{2}$/, {
-          message: 'Date of Birth must be in YYYY-MM-DD format',
-        })
-        .optional(),
+      dateOfBirth: z.date().optional(),
       contactNo: z
         .string()
         .trim()
