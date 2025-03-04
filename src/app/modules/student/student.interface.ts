@@ -27,7 +27,7 @@ export type IStudent = {
   name: IUserName;
   gender: 'male' | 'female';
   email: string;
-  dateOfBirth?: Date;
+  dateOfBirth?: string;
   contactNo: string;
   emergencyContactNo: string;
   bloodGroup?: 'A+' | 'A-' | 'B+' | 'B-' | 'O+' | 'O-' | 'AB+' | 'AB-';
@@ -36,6 +36,7 @@ export type IStudent = {
   guardian: IGuardian;
   localGuardian: ILocalGuardian;
   profileImg?: string;
+  admissionSemester: Types.ObjectId;
   isDeleted: true | false;
 };
 //for creating static

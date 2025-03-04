@@ -1,4 +1,4 @@
-import { model, Schema } from 'mongoose';
+import { model, Schema, next } from 'mongoose';
 import { TAcademicSemester } from './as.interface';
 import {
   AcademicSemesterCode,
@@ -13,7 +13,7 @@ const SemesterSchema = new Schema<TAcademicSemester>(
       enum: AcademicSemesterNames,
       required: true,
     },
-    year: { type: Date, required: true },
+    year: { type: String, required: true },
     code: {
       type: String,
       enum: AcademicSemesterCode,
@@ -29,6 +29,18 @@ const SemesterSchema = new Schema<TAcademicSemester>(
   },
   { timestamps: true },
 );
+
+//To prevent same kind of multiple semester creating in the same year
+SemesterSchema.pre('save', async function (next) {
+  const isSemesterExists = await AcademicSemester.findOne({
+    year: this.year,
+    name: this.name,
+  });
+  if (isSemesterExists) {
+    throw new Error('Semister is already exists !');
+  }
+  next();
+});
 
 export const AcademicSemester = model<TAcademicSemester>(
   'AcademicSemester',

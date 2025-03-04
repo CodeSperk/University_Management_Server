@@ -82,7 +82,7 @@ const CreateStudentValidationSchema = z.object({
         message: 'Gender must be either male or female',
       }),
       email: z.string().trim().email({ message: 'Invalid email format' }),
-      dateOfBirth: z.date().optional(),
+      dateOfBirth: z.string().optional(),
       contactNo: z
         .string()
         .trim()
@@ -111,6 +111,7 @@ const CreateStudentValidationSchema = z.object({
         .trim()
         .url({ message: 'Invalid profile image URL' })
         .optional(),
+      admissionSemester: z.string(),
     }),
   }),
 });

@@ -101,7 +101,7 @@ const studentSchema = new Schema<IStudent, IStudentModel>(
       required: true,
       trim: true,
     },
-    dateOfBirth: { type: Date },
+    dateOfBirth: { type: String },
     contactNo: {
       type: String,
       trim: true,
@@ -129,6 +129,10 @@ const studentSchema = new Schema<IStudent, IStudentModel>(
       type: localGuardianSchema,
     },
     profileImg: { type: String, trim: true },
+    admissionSemester: {
+      type: Schema.Types.ObjectId,
+      ref: 'AcademicSemester',
+    },
     isDeleted: {
       type: Boolean,
       default: false,
