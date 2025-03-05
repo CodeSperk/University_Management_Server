@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import config from '../../config';
 import { AcademicSemester } from '../academicSemester/as.model';
 import { IStudent } from '../student/student.interface';
@@ -5,6 +6,8 @@ import { StudentModel } from '../student/student.model';
 import { TUser } from './user.interface';
 import { User } from './user.model';
 import { generateStudentId } from './user.utils';
+import AppError from '../../errors/AppError';
+import httpStatus from 'http-status';
 // import { generateStudentId } from './user.utils';
 
 const createStudentIntoDB = async (password: string, payLoad: IStudent) => {
@@ -23,19 +26,38 @@ const createStudentIntoDB = async (password: string, payLoad: IStudent) => {
     throw new Error('Academic semester not found');
   }
 
-  userData.id = await generateStudentId(admissionSemester);
+  const session = await mongoose.startSession();
 
-  //create a user
-  const newUser = await User.create(userData);
+  try {
+    //start transaction
+    session.startTransaction();
 
-  //create a student
-  if (Object.keys(newUser).length) {
+    userData.id = await generateStudentId(admissionSemester);
+
+    //create a user (transaction-1)
+    const newUser = await User.create([userData], { session });
+
+    if (!newUser.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create user');
+    }
+
     // set id , _id as user
-    payLoad.id = newUser.id;
-    payLoad.user = newUser._id;
+    payLoad.id = newUser[0].id;
+    payLoad.user = newUser[0]._id;
 
-    const newStudent = await StudentModel.create(payLoad);
+    //Create a student (Transaction -2)
+    const newStudent = await StudentModel.create([payLoad], { session });
+    if (!newStudent.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create student');
+    }
+
+    await session.commitTransaction();
+    await session.endSession();
+
     return newStudent;
+  } catch (err) {
+    await session.abortTransaction();
+    await session.endSession();
   }
 };
 

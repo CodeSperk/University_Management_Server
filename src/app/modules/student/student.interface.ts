@@ -37,6 +37,7 @@ export type IStudent = {
   localGuardian: ILocalGuardian;
   profileImg?: string;
   admissionSemester: Types.ObjectId;
+  department: Types.ObjectId;
   isDeleted: true | false;
 };
 //for creating static

@@ -3,7 +3,7 @@ import sendResponse from '../../utils/sendResponse';
 import { DepartmentServices } from './dept..service';
 import httpStatus from 'http-status';
 
-const createDepartmetn = catchAsync(async (req, res) => {
+const createDepartment = catchAsync(async (req, res) => {
   const result = await DepartmentServices.CreateDepartmentIntoDB(req.body);
 
   sendResponse(res, {
@@ -53,7 +53,7 @@ const UpdateDepartment = catchAsync(async (req, res) => {
 });
 
 export const DepartmentControllers = {
-  createDepartmetn,
+  createDepartment,
   GetAllDepartments,
   GetDepartmentById,
   UpdateDepartment,

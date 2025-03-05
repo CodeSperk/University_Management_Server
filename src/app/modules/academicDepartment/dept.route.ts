@@ -5,7 +5,11 @@ import { DepartmentValidation } from './dept.validation';
 
 const router = express.Router();
 
-router.post('/create-department', DepartmentControllers.createDepartmetn);
+router.post(
+  '/create-department',
+  validateRequest(DepartmentValidation.createDepartmentValidationSchema),
+  DepartmentControllers.createDepartment,
+);
 
 router.get('/', DepartmentControllers.GetAllDepartments);
 
@@ -13,7 +17,7 @@ router.get('/:departmentId', DepartmentControllers.GetDepartmentById);
 
 router.patch(
   '/:departmentId',
-  validateRequest(DepartmentValidation.updateDepertmentValidationSchema),
+  validateRequest(DepartmentValidation.updateDepartmentValidationSchema),
   DepartmentControllers.UpdateDepartment,
 );
 

@@ -7,12 +7,12 @@ const CreateDepartmentIntoDB = async (payload: TDepartment) => {
 };
 
 const GetAllDepartmentsFromDB = async () => {
-  const result = await Department.find();
+  const result = await Department.find().populate('faculty');
   return result;
 };
 
 const GetDepartmentByIdFromDB = async (id: string) => {
-  const result = await Department.findById(id);
+  const result = await Department.findById(id).populate('faculty');
   return result;
 };
 
@@ -20,7 +20,7 @@ const UpdateDepartmentIntoDB = async (
   id: string,
   payload: Partial<TDepartment>,
 ) => {
-  const result = await Department.findByIdAndUpdate({ _id: id }, payload, {
+  const result = await Department.findOneAndUpdate({ _id: id }, payload, {
     new: true,
   });
   return result;
