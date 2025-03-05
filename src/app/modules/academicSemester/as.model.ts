@@ -1,4 +1,4 @@
-import { model, Schema, next } from 'mongoose';
+import { model, Schema } from 'mongoose';
 import { TAcademicSemester } from './as.interface';
 import {
   AcademicSemesterCode,
