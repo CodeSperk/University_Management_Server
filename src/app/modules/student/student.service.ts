@@ -3,6 +3,7 @@ import { StudentModel } from './student.model';
 import { User } from '../user/user.model';
 import AppError from '../../errors/AppError';
 import httpStatus from 'http-status';
+import { IStudent } from './student.interface';
 
 const getAllStudentsFromDB = async () => {
   const result = await StudentModel.find()
@@ -19,7 +20,7 @@ const getAllStudentsFromDB = async () => {
 
 const getSingleStudentFromDB = async (id: string) => {
   // const result = await StudentModel.findOne({ id });
-  const result = await StudentModel.findById(id)
+  const result = await StudentModel.findOne({ id })
     .populate('user')
     .populate('admissionSemester')
     .populate({
@@ -28,6 +29,40 @@ const getSingleStudentFromDB = async (id: string) => {
         path: 'faculty',
       },
     });
+  return result;
+};
+
+const updateStudentIntoDB = async (id: string, payLoad: Partial<IStudent>) => {
+  const { name, guardian, localGuardian, ...remainingStudentData } = payLoad;
+
+  const modifiedUpdatedData: Record<string> = { ...remainingStudentData };
+
+  // name.firstName = "Mahbub"
+  if (name && Object.keys(name).length) {
+    for (const [key, value] of Object.entries(name)) {
+      modifiedUpdatedData[`name.${key}`] = value;
+    }
+  }
+  // name.firstName = "Mahbub"
+  if (guardian && Object.keys(guardian).length) {
+    for (const [key, value] of Object.entries(guardian)) {
+      modifiedUpdatedData[`guardian.${key}`] = value;
+    }
+  }
+  // name.firstName = "Mahbub"
+  if (localGuardian && Object.keys(localGuardian).length) {
+    for (const [key, value] of Object.entries(localGuardian)) {
+      modifiedUpdatedData[`localGuardian.${key}`] = value;
+    }
+  }
+
+  console.log(modifiedUpdatedData);
+
+  const result = await StudentModel.findOneAndUpdate(
+    { id },
+    modifiedUpdatedData,
+    { new: true, runValidators: true },
+  );
   return result;
 };
 
@@ -60,7 +95,7 @@ const deleteStudentFromDB = async (id: string) => {
     await session.commitTransaction();
     await session.endSession();
     return deletedStudent;
-  } catch (err) {
+  } catch {
     await session.abortTransaction();
     await session.endSession();
   }
@@ -70,4 +105,5 @@ export const StudentServices = {
   getAllStudentsFromDB,
   getSingleStudentFromDB,
   deleteStudentFromDB,
+  updateStudentIntoDB,
 };
