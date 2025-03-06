@@ -19,14 +19,14 @@ const departmentSchema = new Schema<TDepartment>(
     timestamps: true,
   },
 );
-departmentSchema.pre('save', async function (next) {
-  const isDepartmentExist = await Department.findOne({ name: this.name });
+// departmentSchema.pre('save', async function (next) {
+//   const isDepartmentExist = await Department.findOne({ name: this.name });
 
-  if (isDepartmentExist) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Department is already exists');
-  }
-  next();
-});
+//   if (isDepartmentExist) {
+//     throw new AppError(httpStatus.NOT_FOUND, 'Department is already exists');
+//   }
+//   next();
+// });
 
 departmentSchema.pre('findOneAndUpdate', async function (next) {
   const query = this.getQuery();
