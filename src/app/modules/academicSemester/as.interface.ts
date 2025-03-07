@@ -26,6 +26,9 @@ export type TAcademicSemester = {
   year: Date;
   code: '01' | '02' | '03';
 >>>>>>> parent of acea1a7 (created constants & validation)
+  name: 'Autumn' | 'Summar' | 'Fall';
+  year: Date;
+  code: '01' | '02' | '03';
   startMonth: TMonth;
   endMonth: TMonth;
 };
