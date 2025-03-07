@@ -4,17 +4,29 @@ import { User } from '../user/user.model';
 import AppError from '../../errors/AppError';
 import httpStatus from 'http-status';
 import { IStudent } from './student.interface';
+import QueryBuilder from '../../builder/queryBuilder';
+import { studentSearchableFields } from './student.constant';
 
-const getAllStudentsFromDB = async () => {
-  const result = await StudentModel.find()
-    .populate('user')
-    .populate('admissionSemester')
-    .populate({
-      path: 'department',
-      populate: {
-        path: 'faculty',
-      },
-    });
+const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
+  const studentQuery = new QueryBuilder(
+    StudentModel.find()
+      .populate('user')
+      .populate('admissionSemester')
+      .populate({
+        path: 'department',
+        populate: {
+          path: 'faculty',
+        },
+      }),
+    query,
+  )
+    .search(studentSearchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await studentQuery.modelQuery;
   return result;
 };
 
@@ -56,7 +68,7 @@ const updateStudentIntoDB = async (id: string, payLoad: Partial<IStudent>) => {
     }
   }
 
-  console.log(modifiedUpdatedData);
+  // console.log(modifiedUpdatedData);
 
   const result = await StudentModel.findOneAndUpdate(
     { id },

@@ -3,7 +3,7 @@ import app from './app';
 import mongoose from 'mongoose';
 import { Server } from 'http';
 
-let server = Server;
+let server: Server;
 
 async function main() {
   try {
@@ -12,15 +12,17 @@ async function main() {
     server = app.listen(config.port, () => {
       console.log(`app is listening on port ${config.port}`);
     });
-  } catch (err) {
-    console.log(err);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (err: any) {
+    // console.log(err);
+    throw new Error(err);
   }
 }
 
 main();
 
 process.on('unhandledRejection', () => {
-  console.log(`UnhandledRejection is detected, shutting down...`);
+  // console.log(`UnhandledRejection is detected, shutting down...`);
   if (server) {
     server.close(() => {
       process.exit(1);
@@ -31,8 +33,8 @@ process.on('unhandledRejection', () => {
 // Promise.reject();
 
 process.on('uncaughtException', () => {
-  console.log(`UnhandledRejection is detected, shutting down...`);
+  // console.log(`UnhandledRejection is detected, shutting down...`);
   process.exit(1);
 });
 
-console.log(x);
+// console.log(x);

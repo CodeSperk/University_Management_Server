@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { z } from 'zod';
 import {
   AcademicSemesterCode,
@@ -18,3 +19,5 @@ const CreateAcademicSemesterValidationSchema = z.object({
 export const AcademicSemesterValidation = {
   CreateAcademicSemesterValidationSchema,
 };
+=======
+>>>>>>> parent of acea1a7 (created constants & validation)
